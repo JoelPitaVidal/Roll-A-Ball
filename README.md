@@ -102,6 +102,6 @@ Este script aplica un impulso al jugador cuando entra en contacto con un potenci
   - Evita que el empuje afecte la dirección vertical del jugador.
 
  ### Enlace a la APK:
-  '''
+
 https://drive.google.com/drive/folders/1Q-MPBIEaA70ndIZyGn_yTwwDIp8A8s4Y?usp=drive_link
-  '''
+  
