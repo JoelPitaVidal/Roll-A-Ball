@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     // Rigidbody of the player.
     private Rigidbody rb;
 
+    private Vector3 dir;
+
     // Variable to keep track of collected "PickUp" objects.
     private int count;
 
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update.
     void Start()
     {
+         dir = Vector3.zero;
         // Get and store the Rigidbody component attached to the player.
         rb = GetComponent<Rigidbody>();
         GetComponent<Rigidbody>(); rb.constraints = RigidbodyConstraints.FreezeRotation; // Asegurarse de no restringir el movimiento vertical
@@ -57,14 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         // Convert the input value into a Vector2 for movement.
         //Vector2 movementVector = movementValue.Get<Vector2>();
-        Vector3 dir = Vector3.zero;
-        dir.x = -Input.acceleration.y;
-        dir.z = Input.acceleration.x;
-        if (dir.sqrMagnitude > 1)
-            dir.Normalize();
-        
-        dir *= Time.deltaTime;
-        transform.Translate(dir * speed);
+
         // Store the X and Y components of the movement.
         //movementX = movementVector.x;
         //movementY = movementVector.y;
@@ -94,11 +90,18 @@ public class PlayerController : MonoBehaviour
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate()
     {
+        dir.x = -Input.acceleration.y;
+        dir.z = Input.acceleration.x;
+        if (dir.sqrMagnitude > 1)
+            dir.Normalize();
+        
+        dir *= Time.deltaTime;
+        transform.Translate(dir * speed);
         // Create a 3D movement vector using the X and Y inputs.
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
 
         // Apply force to the Rigidbody to move the player.
-        rb.AddForce(movement * speed);
+        //rb.AddForce(movement * speed);
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);     
         // obtenemos el estado
         //        Debug.Log("Estado actual: " + stateInfo.fullPathHash);
@@ -109,6 +112,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Flying!");
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, flightSpeed, rb.linearVelocity.z);
         }
+
+
     }
 
     void OnTriggerEnter(Collider other)
