@@ -26,8 +26,7 @@ public class PlayerController : MonoBehaviour
     // UI object to display winning text.
     public GameObject winTextObject;
 
-    // Variable to enable flying
-    private bool canFly = false;
+    private Animator animator;
 
     // Speed of flight
     public float flightSpeed = 10.0f;
@@ -42,6 +41,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         GetComponent<Rigidbody>(); rb.constraints = RigidbodyConstraints.FreezeRotation; // Asegurarse de no restringir el movimiento vertical
         // Initialize count to zero.
+
+        animator = GetComponent<Animator>();
         count = 0;
 
         // Update the count display.
@@ -55,11 +56,21 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue movementValue)
     {
         // Convert the input value into a Vector2 for movement.
-        Vector2 movementVector = movementValue.Get<Vector2>();
-
+        //Vector2 movementVector = movementValue.Get<Vector2>();
+        Vector3 dir = Vector3.zero;
+        dir.x = -Input.acceleration.y;
+        dir.z = Input.acceleration.x;
+        if (dir.sqrMagnitude > 1)
+            dir.Normalize();
+        
+        dir *= Time.deltaTime;
+        transform.Translate(dir * speed);
         // Store the X and Y components of the movement.
-        movementX = movementVector.x;
-        movementY = movementVector.y;
+        //movementX = movementVector.x;
+        //movementY = movementVector.y;
+
+        
+
     }
 
     // This function is called when a jump input is detected.
@@ -88,9 +99,12 @@ public class PlayerController : MonoBehaviour
 
         // Apply force to the Rigidbody to move the player.
         rb.AddForce(movement * speed);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);     
+        // obtenemos el estado
+        //        Debug.Log("Estado actual: " + stateInfo.fullPathHash);
 
         // Added flying logic
-        if (canFly && Input.GetKey(KeyCode.Space))
+        if (stateInfo.fullPathHash == 1466209220 &&Input.GetKey(KeyCode.Space))
         {
             Debug.Log("Flying!");
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, flightSpeed, rb.linearVelocity.z);
@@ -129,7 +143,7 @@ public class PlayerController : MonoBehaviour
 
     public void EnableFlying()
     {
-        canFly = true;
+        animator.SetBool("CanFly", true);
     }
 
     // Function to update the displayed count of "PickUp" objects collected.
