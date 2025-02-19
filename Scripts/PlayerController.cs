@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate()
     {
-        dir.x = -Input.acceleration.y;
+        dir.x = Input.acceleration.y;
         dir.z = Input.acceleration.x;
         if (dir.sqrMagnitude > 1)
             dir.Normalize();
